@@ -32,16 +32,15 @@ def download_file(url,save_path):
         header=response.info()['Content-disposition']
         value, params = cgi.parse_header(header)
         filename=params['filename']
+        data = response.read()
+
+        with open(save_path + '/' + filename, 'wb') as f:
+            f.write(data)
+        f.close()
 
     except:
         pass       
     
-    data = response.read()
-
-    with open(save_path + '/' + filename, 'wb') as f:
-        f.write(data)
-    f.close()
-
 
 def extract_links(soup):
     print '#' + '-'*50 + '#'
@@ -129,7 +128,7 @@ def extract_torrent_links(page_link):
     #setup everyting
     setup_directory(movie_year)
     
-    movie_path= movie_year + '/' + re.sub('[^a-zA-Z0-9 \n\.]', '', movie_title).replace(" ","_")
+    movie_path= movie_year + '/' + re.sub('[^a-zA-Z0-9 \n\.]', '', movie_title).replace(" ","-")
     setup_directory(movie_path)
 
     save_as_csv(movie_path,[movie_desc])
@@ -144,7 +143,7 @@ def extract_torrent_links(page_link):
 
 
 
-#extract_torrent_links('https://yts.lt/movie/new-tale-of-zatoichi-1963')
+#extract_torrent_links('https://yts.lt/movie/5th-of-july-2019')
 
 while page < 2:
     url = str(link) + str(page)
@@ -152,4 +151,3 @@ while page < 2:
     extract_links(soup)
     print "%s pages done"%str(page)
     page = page + 1
-   
